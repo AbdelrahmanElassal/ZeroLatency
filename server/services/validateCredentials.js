@@ -1,4 +1,4 @@
-import { streamerSchema } from "../config/streamerSchema.js";
+import  streamerSchema  from "../config/streamerSchema.js";
 
 //zod when error happens return an object with string called message --> error.message
 //the message is a string needed to be parsed into json --> JSON.parse(error.message)
@@ -10,7 +10,7 @@ function validateCredentials(creds){
     try{
         const fl = streamerSchema.parse(creds);
     }catch(error){
-        next(error) //error handled in the global handler
+        throw(error) //error handled in the global handler
     }
 }
 
