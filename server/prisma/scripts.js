@@ -8,8 +8,9 @@ const prismaclient = new PrismaClient()
 // and so on
 
 export async function addStreamer({email , firstname , lastname , username , password , salt} , next){
+    let streamer;
     try{
-        const streamer = await prismaclient.streamer.create({
+        streamer = await prismaclient.streamer.create({
             data:{
                 email: email,
                 firstname: firstname,
@@ -20,9 +21,40 @@ export async function addStreamer({email , firstname , lastname , username , pas
             }
         }) 
 
-        return streamer;
+        
     }catch(error){
         throw(error)
     }
+    
+    return streamer;
+}
 
+export async function findUserbyEmail(em){
+    let streamer;
+
+    try{
+        streamer = await prismaclient.streamer.findUnique({
+        where: {
+            email: em,
+        },
+        })
+    }catch(error){
+        throw(error);
+    }
+    return streamer;
+}
+
+export async function findUserbyId(id){
+    let streamer;
+
+    try{
+        streamer = await prismaclient.streamer.findUnique({
+        where: {
+            id: id,
+        },
+        })
+    }catch(error){
+        throw(error);
+    }
+    return streamer;
 }

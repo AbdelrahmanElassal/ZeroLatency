@@ -7,4 +7,5 @@ export function doToken(id){
     return Jwt.sign({id} , process.env.STRING , {
       expiresIn: 24 * 60 * 60
     })
-  }
+}
+

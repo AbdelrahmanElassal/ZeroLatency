@@ -7,6 +7,8 @@ export async function passwordPreProcessing(password){
     return [newpass , salt];
 }
 
-export async function comparePassword(password , compared , salt){
-    
+export async function comparePassword(password , salt , compared){
+    const newpass = await bcrypt.hash(password , salt);
+    const flag = compared == newpass;   
+    return flag;
 }
