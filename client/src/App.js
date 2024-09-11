@@ -1,23 +1,17 @@
-import React , {useEffect , useState}  from 'react';
+import React , {useEffect , useState }  from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import StreamPlayer from './components/streamComponents/StreamPlayer';
 
-function App() {
-
-  const [message , setMessage] = useState('');
-
-  useEffect(()=>{
-    fetch('http://localhost:5000/')
-      .then(response => response.json())
-      .then(data => setMessage(data.message))
-      .catch(error => console.error('Error fetching data:' , error));
-  }, []);
-
-  return (
-    <div className="App">
-      <h1>
-        {message}
-      </h1>
-    </div>
+function App() {  
+  return (   
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<h1>Home</h1>} />
+      <Route path="/stream" element={<StreamPlayer/>}/>
+    </Routes>
+    </BrowserRouter>
   );
 }
 
 export default App;
+
