@@ -2,6 +2,7 @@
   "name": "streaming-server",
   "version": "1.0.0",
   "main": "sserver.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon sserver.js"
@@ -10,8 +11,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.20.0",
     "nodemon": "^3.1.4",
-    "socket.io": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "wrtc": "^0.4.7"
   }
 }
