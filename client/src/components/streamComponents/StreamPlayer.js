@@ -12,8 +12,6 @@ function StreamPlayer() {
     const isRemoteDescriptionSet = useRef(false); 
 
 
-
-
     useEffect(() => {
         const getMediaStream = async()=>{
             try{
@@ -49,10 +47,10 @@ function StreamPlayer() {
             return;
         }
         const config = {
-    iceServers: [
-        { urls: "stun:stun.l.google.com:19302" }
-    ]
-};
+            iceServers: [
+                { urls: "stun:stun.l.google.com:19302" }
+                ]
+        };
         peerConnection.current = new RTCPeerConnection(config);
         console.log('can or not ice ' , peerConnection.current.canTrickleIceCandidates)
         stream.getTracks().forEach(track => peerConnection.current.addTrack(track, stream));

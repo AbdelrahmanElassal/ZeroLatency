@@ -2,7 +2,9 @@ import express from 'express';
 import {io} from 'socket.io-client';
 import cors from 'cors';
 import pkg from 'wrtc';
+
 const app = express();
+
 
 
 
@@ -15,9 +17,10 @@ const server = app.listen(8080 , ()=>{
 });
 
 
+
+
 let iceCandidatesQueue = [];
 let isRemoteDescriptionSet = false;
-
 
 
 const socket = io('http://localhost:5000');
@@ -30,11 +33,15 @@ const config = {
 
 
 const peerConnection = new pkg.RTCPeerConnection(config);
-const dummyStream = new pkg.MediaStream();
+const dummyStream = new pkg.MediaStream({video : true , audio : true});
 const dummyTrack = dummyStream.getVideoTracks()[0] || dummyStream.getAudioTracks()[0];
 if (dummyTrack) {
     peerConnection.addTrack(dummyTrack, dummyStream);
 }
+
+peerConnection.addEventListener('track', async (event) => {
+    const [remoteStream] = event.streams;
+});
 
 peerConnection.addEventListener('icecandidate', event => {
     if (event.candidate) {
@@ -48,6 +55,10 @@ peerConnection.addEventListener('icegatheringstatechange', () => {
 
 peerConnection.addEventListener('connectionstatechange', event => {
     console.log('peers are connected ',peerConnection.connectionState)
+});
+
+peerConnection.addEventListener('track', (stream)=>{
+    console.log("stream data here ",typeof stream);
 });
 
 socket.on('offer', async(offer)=>{
@@ -86,3 +97,5 @@ socket.on('icecandidate', async(candidate)=>{
     }
 });
 
+
+  
