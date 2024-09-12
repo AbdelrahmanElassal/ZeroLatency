@@ -8,6 +8,9 @@ function StreamPlayer() {
     const videoRef = useRef(null);
     const peerConnection = useRef(null);
     const [stream , setStream] = useState(null);
+    const iceCandidatesQueue = useRef([]); 
+    const isRemoteDescriptionSet = useRef(false); 
+
 
 
 
@@ -18,8 +21,7 @@ function StreamPlayer() {
                     'audio': {'echoCancellation': true},
                     'video': {
                         'width': {'min': 1280},
-                        'height': {'min': 640
-                        }
+                        'height': {'min': 640}
                         }
                     };
                 const mediaStream = await navigator.mediaDevices.getUserMedia(constrains);
@@ -46,20 +48,27 @@ function StreamPlayer() {
         if(peerConnection.current){
             return;
         }
-        const config = {'iceServers': [
-            { 'urls': 'stun:stun.l.google.com:19302'}
-        ]}
+        const config = {
+    iceServers: [
+        { urls: "stun:stun.l.google.com:19302" }
+    ]
+};
         peerConnection.current = new RTCPeerConnection(config);
+        console.log('can or not ice ' , peerConnection.current.canTrickleIceCandidates)
+        stream.getTracks().forEach(track => peerConnection.current.addTrack(track, stream));
+
         peerConnection.current.addEventListener('icecandidate', event => {
             if (event.candidate) {
-                socket.emit.broadcast('icecandidate', event.candidate);
+                socket.emit('icecandidate', event.candidate);
             }
         });
 
+        peerConnection.current.addEventListener('icegatheringstatechange', () => {
+            console.log('ICE Gathering State:', peerConnection.current.iceGatheringState);
+        });
+
         peerConnection.current.addEventListener('connectionstatechange', event => {
-            if (peerConnection.current.connectionState === 'connected') {
-                console.log('peers are connected');
-            }
+            console.log('peers are connected ',peerConnection.current.connectionState);
         });
         
 
@@ -71,19 +80,31 @@ function StreamPlayer() {
         socket.on('answer',async(answer)=>{
             const remoteDisc = new RTCSessionDescription(answer);
             await peerConnection.current.setRemoteDescription(remoteDisc); 
+            isRemoteDescriptionSet.current = true;
             console.log(socket.id, "recieved answer");
+            iceCandidatesQueue.current.forEach(async candidate => {
+                await peerConnection.current.addIceCandidate(candidate);
+            });
+            iceCandidatesQueue.current = []; // Clear the buffer after processing
         });
 
         socket.on('icecandidate', async(candidate)=>{
             if (candidate) {
-                try {
-                    await peerConnection.current.addIceCandidate(candidate);
-                    console.log("candidate")
-
-                } catch (e) {
-                    console.error('Error adding received ice candidate', e);
+                if (isRemoteDescriptionSet.current) {
+                    try {
+                        await peerConnection.current.addIceCandidate(candidate);
+                        console.log("ICE candidate added");
+                    } catch (e) {
+                        console.error('Error adding received ICE candidate', e);
+                    }
+                } else {
+                    // Buffer ICE candidates until remote description is set
+                    iceCandidatesQueue.current.push(candidate);
                 }
+            } else {
+                console.log("Received an empty ICE candidate");
             }
+        
         });
 
     }
