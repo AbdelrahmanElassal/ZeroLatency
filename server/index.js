@@ -37,16 +37,16 @@ io.on('connection', (socket) => {
   console.log(socket.id);
   socket.on('offer' , (offer) => {
     console.log(socket.id , ' sent an offer');
-    socket.broadcast.emit('offer', offer);
+    socket.broadcast.emit('offer', {...offer, id:socket.id});
   })
 
   socket.on('answer', (answer) => {
-    socket.broadcast.emit('answer', answer);
+    socket.broadcast.emit('answer', {...answer, id:socket.id});
     console.log(socket.id , ' sent an answer');
   })
 
   socket.on('icecandidate' , (candidate) => {
     console.log(socket.id , ' sent an ICE');
-    socket.broadcast.emit('icecandidate', candidate);
+    socket.broadcast.emit('icecandidate', {...candidate, id:socket.id});
   });
 });
