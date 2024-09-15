@@ -37,48 +37,48 @@ socket.on('offer', async(offer)=>{
     let id = offer.id;
     iceCandidateMap[id] = [];
     const peerConnection = new pkg.RTCPeerConnection(config);
-    const dummyStream = new pkg.MediaStream({video : true , audio : true});
-    const dummyTrack = dummyStream.getVideoTracks()[0] || dummyStream.getAudioTracks()[0];
+    // const dummyStream = new pkg.MediaStream({video : true , audio : true});
+    // const dummyTrack = dummyStream.getVideoTracks()[0] || dummyStream.getAudioTracks()[0];
+    // if (dummyTrack) {
+    //     peerConnection.addTrack(dummyTrack, dummyStream);
+    // }
 
     peerConnectionMap[id] = peerConnection;
     isRemoteDescriptionMap[id] = false;
 
-    console.log('peer   ', peerConnection);
-    peerConnection.addEventListener('track', async (event) => {
-        const [remoteStream] = event.streams;
+    console.log('peer   ', peerConnectionMap[id]);
+    peerConnectionMap[id].addEventListener('track', async (event) => {
+        console.log('track', event.streams)
     });
 
-    peerConnection.addEventListener('icecandidate', event => {
+    peerConnectionMap[id].addEventListener('icecandidate', event => {
         if (event.candidate) {
             socket.emit('icecandidate', event.candidate);
         }
     });
 
-    peerConnection.addEventListener('icegatheringstatechange', () => {
-        console.log('ICE Gathering State:', peerConnection.iceGatheringState);
+    peerConnectionMap[id].addEventListener('icegatheringstatechange', () => {
+        console.log('ICE Gathering State:', peerConnectionMap[id].iceGatheringState);
     });
 
-    peerConnection.addEventListener('connectionstatechange', event => {
-        console.log('peers are connected ',peerConnection.connectionState)
+    peerConnectionMap[id].addEventListener('connectionstatechange', event => {
+        console.log('peers are connected ',peerConnectionMap[id].connectionState)
     });
 
-    peerConnection.addEventListener('track', (stream)=>{
-        console.log("stream data here ",typeof stream);
-    });
-    if (dummyTrack) {
-        peerConnection.addTrack(dummyTrack, dummyStream);
-    }
+    
+    
     if(offer){
         const remoteDisc = new pkg.RTCSessionDescription(offer);
-        await peerConnection.setRemoteDescription(remoteDisc);
+        await peerConnectionMap[id].setRemoteDescription(remoteDisc);
         console.log(socket.id , "recieved remote disc");
-        const answer = await peerConnection.createAnswer();
-        await peerConnection.setLocalDescription(answer);
+        const answer = await peerConnectionMap[id].createAnswer();
+        await peerConnectionMap[id].setLocalDescription(answer);
         socket.emit('answer', answer);
         isRemoteDescriptionMap[id] = true;
         if(iceCandidateMap[id]){
             iceCandidateMap[id].forEach(async candidate => {
                 await peerConnectionMap[id].addIceCandidate(candidate);
+                console.log("ICE candidate added");
             });
         }
         iceCandidateMap[id] = [];

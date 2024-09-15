@@ -1,5 +1,6 @@
 import {React , useEffect , useState , useRef} from 'react'
 import {io} from 'socket.io-client'
+import adapter from 'webrtc-adapter';
 
 const socket = io('http://localhost:5000'); 
 
@@ -15,20 +16,18 @@ function StreamPlayer() {
     useEffect(() => {
         const getMediaStream = async()=>{
             try{
-                const constrains = {
-                    'audio': {'echoCancellation': true},
-                    'video': {
-                        'width': {'min': 1280},
-                        'height': {'min': 640}
-                        }
-                    };
-                const mediaStream = await navigator.mediaDevices.getUserMedia(constrains);
+                const constraints = {
+                    video: true, // Set basic constraints for testing
+                    audio: true
+                };
+               const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
                 setStream(mediaStream);
                 // Extract the video track only
                 const videoTrack = mediaStream.getVideoTracks()[0];
                 // Create a new MediaStream with only the video track
                 const videoOnlyStream = new MediaStream([videoTrack]);
                 videoRef.current.srcObject = videoOnlyStream;
+                
                 if (videoRef.current) {
                     videoRef.current.srcObject = videoOnlyStream;
                 }
@@ -54,12 +53,15 @@ function StreamPlayer() {
         peerConnection.current = new RTCPeerConnection(config);
         console.log('can or not ice ' , peerConnection.current.canTrickleIceCandidates)
         stream.getTracks().forEach(track => peerConnection.current.addTrack(track, stream));
+        stream.getTracks().forEach(track => console.log('added Track ' , track));
 
+        console.log(peerConnection.current.getSenders())
         peerConnection.current.addEventListener('icecandidate', event => {
             if (event.candidate) {
                 socket.emit('icecandidate', event.candidate);
             }
         });
+
 
         peerConnection.current.addEventListener('icegatheringstatechange', () => {
             console.log('ICE Gathering State:', peerConnection.current.iceGatheringState);
@@ -72,6 +74,7 @@ function StreamPlayer() {
 
         const offer = await peerConnection.current.createOffer();
         await peerConnection.current.setLocalDescription(offer);
+        console.log('SDP Offer:', offer.sdp);
 
         socket.emit('offer', offer);
 
@@ -80,6 +83,7 @@ function StreamPlayer() {
             await peerConnection.current.setRemoteDescription(remoteDisc); 
             isRemoteDescriptionSet.current = true;
             console.log(socket.id, "recieved answer");
+    
             iceCandidatesQueue.current.forEach(async candidate => {
                 await peerConnection.current.addIceCandidate(candidate);
             });

@@ -30,18 +30,18 @@ const io = new socketio.Server(signalingServer,{
     origin: ["http://localhost:3000", "https://localhost:8080"],
     methods: ["GET", "POST"]
   },
-  
 });
+
 
 io.on('connection', (socket) => {
   console.log(socket.id);
   socket.on('offer' , (offer) => {
     console.log(socket.id , ' sent an offer');
-    socket.broadcast.emit('offer', {...offer, id:socket.id});
+    socket.broadcast.emit('offer', {id:socket.id, ...offer});
   })
 
   socket.on('answer', (answer) => {
-    socket.broadcast.emit('answer', {...answer, id:socket.id});
+    socket.broadcast.emit('answer', answer);
     console.log(socket.id , ' sent an answer');
   })
 

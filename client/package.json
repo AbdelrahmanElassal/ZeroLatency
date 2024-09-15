@@ -15,7 +15,8 @@
     "socket.io-client": "^4.7.5",
     "stun": "^2.1.0",
     "video.js": "^8.17.3",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "webrtc-adapter": "^9.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
