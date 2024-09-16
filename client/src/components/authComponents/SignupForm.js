@@ -31,6 +31,8 @@ function SignupForm(){
         try{
             const response = await fetch('http://localhost:5000/signup', {
                 method: 'POST',
+                withCredentials: true,
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                   },
@@ -44,6 +46,7 @@ function SignupForm(){
               else if(response.status === 400){
                 setMessage(res.errors);
               }
+              console.log(typeof document.cookies)
         }catch(error){
             console.error(error);
             setMessage("Failed to sign up. Please try again later.");

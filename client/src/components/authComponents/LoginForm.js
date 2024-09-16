@@ -19,8 +19,8 @@ function LoginForm(){
         try{
             const response = await fetch('http://localhost:5000/login', {
                 method: 'POST',
-                mode: "cors",
-                credentials: "include",
+                withCredentials: true,
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                   },

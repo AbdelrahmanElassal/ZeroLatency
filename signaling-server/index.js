@@ -10,7 +10,11 @@ import * as socketio from 'socket.io';
 const app = express();
 
 
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000", "https://localhost:8080"],
+  methods: ["GET", "POST"],
+  credentials: true
+}));
 app.use(express.json());
 
 app.use(authRouter);
@@ -28,7 +32,8 @@ const signalingServer = app.listen(5000, () => {
 const io = new socketio.Server(signalingServer,{
   cors: {
     origin: ["http://localhost:3000", "https://localhost:8080"],
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
+    credentials: true
   },
 });
 
