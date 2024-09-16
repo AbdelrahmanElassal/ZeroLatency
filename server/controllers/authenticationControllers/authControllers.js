@@ -26,9 +26,11 @@ export async function signupPostController(req , res , next){
 
         //jwt handling and sending the token back
         const token = doToken(streamer.id);
-        res.cookie('jwt', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie('jwt', token, { httpOnly: false, maxAge: 24 * 60 * 60 * 1000 });
         res.status(201).json({ streamer: streamer.id });
+        console.log(res)
     }catch(error){
+        console.log(error)
         next(error);
     }
 }
@@ -50,7 +52,7 @@ export async function loginPostController (req , res , next){
 
 
         const token = doToken(streamer.id);
-        res.cookie('jwt', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie('jwt', token, { httpOnly: false, maxAge: 24 * 60 * 60 * 1000 });
         res.status(201).json({ streamer: streamer.id });
 
     }catch(error){
