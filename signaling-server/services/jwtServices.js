@@ -5,7 +5,7 @@ dotenv.config();
 
 export function doToken(id){
     return Jwt.sign({id} , process.env.STRING , {
-      expiresIn: 24 * 60 * 60
+      expiresIn: 24 * 60 * 60 * 1000
     })
 }
 

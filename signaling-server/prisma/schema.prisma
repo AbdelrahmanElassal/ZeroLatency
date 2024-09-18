@@ -23,4 +23,16 @@ model Streamer {
   salt String
 
   @@map("streamers")
+  Stream Stream[]
+}
+
+model Stream {
+  id String @id @default(uuid())
+  room String
+  title String
+  description String
+  streamer Streamer @relation(fields: [streamerId], references: [id])
+  streamerId String
+
+  @@map("streams")
 }

@@ -2,7 +2,6 @@ import {React , useEffect , useState , useRef} from 'react'
 import {io} from 'socket.io-client'
 import adapter from 'webrtc-adapter';
 
-const socket = io('http://localhost:5000'); 
 
 
 function StreamPlayer() {
@@ -45,6 +44,7 @@ function StreamPlayer() {
         if(peerConnection.current){
             return;
         }
+        const socket = io('http://localhost:5000'); 
         const config = {
             iceServers: [
                 { urls: "stun:stun.l.google.com:19302" }

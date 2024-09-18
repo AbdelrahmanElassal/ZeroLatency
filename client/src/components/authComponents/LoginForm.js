@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
+import { AuthContext } from "../../App";
+
 
 
 function LoginForm(){
 
     const [loginCred , setLoginCred] = useState({email : "", password : ""});
     const [message , setMessage] = useState('') 
+    const [isLoggedIn , setIsLoggedIn] = useContext(AuthContext)
 
     const handleLoginChange = (e) => {
         setLoginCred({...loginCred, [e.target.id] : e.target.value});
@@ -30,6 +33,7 @@ function LoginForm(){
               if(response.status === 201){
                 setMessage(res.streamer)
                 console.log(document.cookie)
+                setIsLoggedIn(true)
               }
               else if(response.status === 404){
                 setMessage("Data is Wrong");

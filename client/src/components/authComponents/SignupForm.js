@@ -1,9 +1,10 @@
 import React from "react";
-import { useState } from "react";
+import { useState , useContext} from "react";
+import { AuthContext } from "../../App";
 
 
 function SignupForm(){
-
+    const {isLoggedIn , setIsLoggedIn} = useContext(AuthContext)
     const [signupCred , setSignupCred] = useState({
         firstname : "",
         lastname : "",
@@ -12,8 +13,8 @@ function SignupForm(){
         password : "",
         confirmPassword : ""
     })
-
     const [message , setMessage] = useState('') 
+
 
     const handleSignupChange = (e) => {
         setSignupCred({...signupCred, [e.target.id] : e.target.value});
@@ -42,6 +43,7 @@ function SignupForm(){
               if(response.status === 201){
                 setMessage("success")
                 console.log(document.cookies)
+                setIsLoggedIn(true)
               }
               else if(response.status === 400){
                 setMessage(res.errors);
