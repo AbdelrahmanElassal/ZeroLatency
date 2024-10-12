@@ -30,7 +30,7 @@ function SignupForm(){
         }
 
         try{
-            const response = await fetch('http://localhost:5000/signup', {
+            const response = await fetch('http://192.168.1.5:5000/signup', {
                 method: 'POST',
                 withCredentials: true,
                 credentials: 'include',

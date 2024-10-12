@@ -15,20 +15,24 @@ function App() {
 
 
   return (  
-    <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn }}>
-      <div className="App">
-          <BrowserRouter>
-            <Navbar />
-            <Routes>
-              <Route path="/User" element={<UserComponent />} /> 
-              <Route path="/" element={<Home />} />
-              <Route path="/auth" element={<AuthMain />} />
-              <Route path="/stream" element={<StreamPlayer/>}/>
-            </Routes>
-          </BrowserRouter>
-        </div>
-            
-    </AuthContext.Provider> 
+    <>
+      <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn }}>
+        <div className="App">
+            <BrowserRouter>
+              <Navbar />
+              <Routes>
+                <Route path="/User" element={<UserComponent />} /> 
+                <Route path="/" element={<Home />} />
+                <Route path="/auth" element={<AuthMain />} />
+                <Route path="/stream" element={<StreamPlayer/>}/>
+              </Routes>
+              
+            </BrowserRouter>
+          </div>
+              
+      </AuthContext.Provider> 
+
+    </>
       
   );
 }

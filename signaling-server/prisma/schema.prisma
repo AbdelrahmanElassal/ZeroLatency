@@ -24,6 +24,7 @@ model Streamer {
 
   @@map("streamers")
   Stream Stream[]
+  Comment Comment[]
 }
 
 model Stream {
@@ -35,4 +36,14 @@ model Stream {
   streamerId String
 
   @@map("streams")
+}
+
+model Comment {
+  id String @id @default(uuid())
+  content String
+  createdAt DateTime @default(now())
+  streamer Streamer @relation(fields: [authorId], references: [id])
+  authorId String
+
+  @@map("comments")
 }

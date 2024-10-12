@@ -58,3 +58,24 @@ export async function findUserbyId(id){
     }
     return streamer;
 }
+
+
+
+export async function addStream(title , description , streamerId){
+    let stream;
+    try{
+        stream = await prismaclient.stream.create({
+            data:{
+                title: "Stream Title",
+                description: "Stream Description",
+                //add more fields if needed
+            }
+        }) 
+
+        
+    }catch(error){
+        throw(error)
+    }
+    
+    return stream;
+}

@@ -3,7 +3,6 @@ import {io} from 'socket.io-client'
 import adapter from 'webrtc-adapter';
 
 
-
 function StreamPlayer() {
     const videoRef = useRef(null);
     const peerConnection = useRef(null);
@@ -44,7 +43,7 @@ function StreamPlayer() {
         if(peerConnection.current){
             return;
         }
-        const socket = io('http://localhost:5000'); 
+        const socket = io('http://192.168.1.5:5000'); 
         const config = {
             iceServers: [
                 { urls: "stun:stun.l.google.com:19302" }
@@ -123,4 +122,4 @@ function StreamPlayer() {
 }
 
 
-export default StreamPlayer;
+export default StreamPlayer;   
